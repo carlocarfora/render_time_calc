@@ -1,17 +1,25 @@
 use eframe::egui;
 
-fn calculate_render_time(mins:i32, frames:i32, machines:i32) -> String{
-    if machines == 0 {
-        let total = "0 hours";
-        total.to_string()
-    } else {
-        let total_mins:f32 = ((mins * frames) / machines) as f32;
+struct RenderTimeInfo {
+    minutes: i32,
+    frames: i32,
+    machines: i32,
+}
 
-        let hours:f32 = (total_mins / 60.0).floor();
-        let minutes:f32 = total_mins % 60.0;
-        
-        let total = format!("{:.0} h {:.0} m", hours, minutes);
-        total
+impl RenderTimeInfo {
+    fn calculate_render_time(&self) -> String {
+        if self.machines == 0 {
+            let total = "0 hours";
+            total.to_string()
+        } else {
+            let total_mins:f32 = ((self.minutes * self.frames) / self.machines) as f32;
+    
+            let hours:f32 = (total_mins / 60.0).floor();
+            let minutes:f32 = total_mins % 60.0;
+            
+            let total = format!("{:.0} h {:.0} m", hours, minutes);
+            total
+        }        
     }
 }
 
@@ -24,9 +32,14 @@ fn main() -> Result<(), eframe::Error> {
     };
 
     // Our application state:
-    let mut minutes = 0;
-    let mut frames = 0;
-    let mut machines = 0;
+    let mut data = RenderTimeInfo {
+        minutes: 0,
+        frames: 0,
+        machines: 0,
+    };
+    // let mut minutes = 0;
+    // let mut frames = 0;
+    // let mut machines = 0;
 
     // showing the UI
     eframe::run_simple_native("Render Time Calc", options, move |ctx, _frame| {
@@ -42,20 +55,20 @@ fn main() -> Result<(), eframe::Error> {
                 .striped(true)
                 .show(ui, |ui| {
                     ui.label("Minutes per Frame: ");
-                    ui.add(egui::Slider::new(&mut minutes, 0..=120));
+                    ui.add(egui::Slider::new(&mut data.minutes, 0..=120));
                     ui.end_row();
                 
                     ui.label("No. of Frames: ");
-                    ui.add(egui::Slider::new(&mut frames, 0..=100));
+                    ui.add(egui::Slider::new(&mut data.frames, 0..=100));
                     ui.end_row();
                 
                     ui.label("No. of Machines: ");
-                    ui.add(egui::Slider::new(&mut machines, 0..=100));
+                    ui.add(egui::Slider::new(&mut data.machines, 0..=100));
                     ui.end_row();
                 });
 
                 ui.add_space(10.0);
-                ui.heading(format!("Render Time: {}", calculate_render_time(minutes, frames, machines)));
+                ui.heading(format!("Render Time: {}", data.calculate_render_time()));
         });
  
     })
