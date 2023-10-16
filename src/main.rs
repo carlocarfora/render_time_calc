@@ -55,15 +55,23 @@ fn main() -> Result<(), eframe::Error> {
                 .striped(true)
                 .show(ui, |ui| {
                     ui.label("Minutes per Frame: ");
-                    ui.add(egui::Slider::new(&mut data.minutes, 0..=120));
+                    ui.add(egui::Slider::new(&mut data.minutes, 0..=120)
+                        .clamp_to_range(false)
+                    );
+
                     ui.end_row();
                 
                     ui.label("No. of Frames: ");
-                    ui.add(egui::Slider::new(&mut data.frames, 0..=100));
+                    ui.add(egui::Slider::new(&mut data.frames, 0..=100)
+                        .clamp_to_range(false)
+                    );
+                    
                     ui.end_row();
                 
                     ui.label("No. of Machines: ");
-                    ui.add(egui::Slider::new(&mut data.machines, 0..=100));
+                    ui.add(egui::Slider::new(&mut data.machines, 0..=100)
+                        .clamp_to_range(false)
+                    );
                     ui.end_row();
                 });
 
